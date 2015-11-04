@@ -9,7 +9,7 @@
 #include "Configuration.h"
 
 #include "RandomRestartLocalSearch.h"
-
+#include "P3.h"
 
 #include <unordered_map>
 
@@ -20,6 +20,7 @@ using pointer=shared_ptr<Solver> (*)(Random& rand, shared_ptr<Problem> evaluator
 // Lookup table translates strings to function pointers
 static std::unordered_map<string, pointer> lookup = {
     { "RandomRestartLocalSearch", RandomRestartLocalSearch::create },
+    { "P3", P3::create },
 };
 }
 

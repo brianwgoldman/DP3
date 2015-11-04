@@ -66,3 +66,51 @@ void local_search::first_improvement(Random & rand, vector<int> & solution,
     }
   } while (improvement);
 }
+
+
+void local_search::ordinal_first(Random & rand, vector<int> & solution,
+                                   double & fitness, shared_ptr<Problem> problem) {
+  // Set up data structure for random bit selection
+  vector<int> options(solution.size());
+  iota(options.begin(), options.end(), 0);
+  double new_fitness;
+  bool improvement;
+  // keep track of locations already tried since last improvement
+  std::unordered_set<int> tried;
+
+  vector<int> steps = {-1, 1};
+  // Keep looping until there is no single bit flip improvement
+  do {
+    improvement = false;
+    // Test the bits in a random order
+    std::shuffle(options.begin(), options.end(), rand);
+    for (const auto& index : options) {
+      // If this location has already been tried, skip to the next one
+      if (tried.count(index) != 0) {
+        continue;
+      }
+
+      shuffle(steps.begin(), steps.end(), rand);
+      int max_value = problem->variable_range()[index];
+      for (const auto & step : steps) {
+        while (solution[index] + step < max_value and
+               solution[index] + step >= 0) {
+          // flip and evaluate the modification
+          solution[index] += step;
+          new_fitness = problem->evaluate(solution);
+          if (fitness < new_fitness) {
+            // Keep change, update variables
+            fitness = new_fitness;
+            improvement = true;
+            tried.clear();
+          } else {
+            // Revert the change
+            solution[index] -= step;
+            break;
+          }
+        }
+      }
+      tried.insert(index);
+    }
+  } while (improvement);
+}

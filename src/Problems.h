@@ -5,7 +5,7 @@
 
 #include "Util.h"
 #include "Configuration.h"
-
+#include <math.h>
 
 // This macro is used to define a factory function, simplifying the transition from
 // configuration option to object capable of performing evaluation.
@@ -37,10 +37,38 @@ class ValueMax : public Problem {
   int maximum_fitness;
 };
 
+class DeceptiveTrap : public Problem {
+ public:
+  DeceptiveTrap(Configuration& config);
+  double virtual evaluate(const vector<int> & solution) override;
+  create_problem(DeceptiveTrap);
+ protected:
+  int maximum_fitness;
+};
+
+class PairsEqual : public Problem {
+ public:
+  PairsEqual(Configuration& config);
+  double virtual evaluate(const vector<int> & solution) override;
+  create_problem(PairsEqual);
+ protected:
+  int maximum_fitness;
+};
+
+class Rastrigin : public Problem {
+ public:
+  Rastrigin(Configuration& config) { construct_range(config); };
+  double virtual evaluate(const vector<int> & solution) override;
+  create_problem(Rastrigin);
+};
+
 namespace problem {
 using pointer=std::shared_ptr<Problem> (*)(Configuration &);
 static std::unordered_map<string, pointer> lookup = {
     { "ValueMax", ValueMax::create },
+    { "DeceptiveTrap", DeceptiveTrap::create },
+    { "PairsEqual", PairsEqual::create },
+    { "Rastrigin", Rastrigin::create },
 };
 }
 

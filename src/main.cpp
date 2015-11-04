@@ -34,7 +34,7 @@ int main(int argc, char * argv[]) {
       solver->iterate();
     }
   } catch (StopIteration & e) {
-    // Don't care
+    cout << "Caught stop iteration" << endl;
   }
   cout << "Clean end" << endl;
   return 0;

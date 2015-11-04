@@ -27,9 +27,16 @@ using pointer=void (*)(Random & rand, vector<int> & solution, double & fitness, 
 void first_improvement(Random & rand, vector<int> & solution, double & fitness,
                        shared_ptr<Problem> problem);
 
+// Each time an improvement is found, it is immediately kept, with search progressing
+// from the modified solution
+void ordinal_first(Random & rand, vector<int> & solution, double & fitness,
+                       shared_ptr<Problem> problem);
+
+
 // Mapping used to convert configuration string names to actual function pointers
 static std::unordered_map<string, pointer> lookup = {
   { "first_improvement", first_improvement },
+  { "ordinal_first", ordinal_first },
 };
 }
 

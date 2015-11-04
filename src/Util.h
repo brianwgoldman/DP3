@@ -29,17 +29,15 @@ vector<int> random_vector(Random & rand, const vector<int>& variable_range);
 void print(const vector<int>& solution, ostream & out=cout);
 
 
-// Returns the entropy given the list of counts and a total number,
+// Returns the entropy given the map's values a total number,
 // where total = sum(counts)
 template<class ForwardIt>
-double entropy(const ForwardIt& begin, const ForwardIt & end, const double& total) {
+inline double map_entropy(const ForwardIt& begin, const ForwardIt & end, const double total) {
   double sum = 0;
   double p;
   for (auto it=begin; it != end; it++) {
-    if (*it) {
-      p = (*it) / total;
-      sum -= (p * log(p));
-    }
+    p = it->second / total;
+    sum -= (p * log(p));
   }
   return sum;
 }
@@ -53,4 +51,32 @@ class StopIteration : public std::exception {
 
 void throwStop(int dummy=0);
 
+
+// This is taken from Boost to allow for hashing of pairs
+template <class T>
+inline void hash_combine(std::size_t & seed, const T & v) {
+  std::hash<T> hasher;
+  seed ^= hasher(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+}
+
+namespace std {
+  template<typename S, typename T> struct hash<pair<S, T>> {
+    inline size_t operator()(const pair<S, T> & v) const {
+      size_t seed = 0;
+      hash_combine(seed, v.first);
+      hash_combine(seed, v.second);
+      return seed;
+    }
+  };
+
+  template<typename T> struct hash<vector<T>> {
+    inline size_t operator()(const vector<T> & v) const {
+      size_t seed = 0;
+      for (const auto & elem : v) {
+        hash_combine(seed, elem);
+      }
+      return seed;
+    }
+  };
+}
 #endif /* UTIL_H_ */
