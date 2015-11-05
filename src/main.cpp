@@ -6,6 +6,13 @@
 #include "MonitorLayer.h"
 #include <signal.h>
 
+bool volatile signal_received = false;
+
+void signal_receiver(int) {
+  signal_received = true;
+}
+
+
 int main(int argc, char * argv[]) {
   Configuration config;
   config.parse(argc, argv);
@@ -23,18 +30,18 @@ int main(int argc, char * argv[]) {
   config.dump();
   rand.seed(seed);
 
-  signal(SIGINT, throwStop);
+  signal(SIGINT, signal_receiver);
 
   auto problem = config.get<problem::pointer>("problem")(config);
   shared_ptr<MonitorLayer> wrapped = shared_ptr<MonitorLayer>(new MonitorLayer(config, problem));
   auto solver_method = config.get<solver::pointer>("solver");
   auto solver = solver_method(rand, std::static_pointer_cast<Problem>(wrapped), config);
   try {
-    while (wrapped->time_remaining()) {
+    while (wrapped->time_remaining() and not signal_received) {
       solver->iterate();
     }
   } catch (StopIteration & e) {
-    cout << "Caught stop iteration" << endl;
+    // No handling necessary, just move on to the rest of the program.
   }
   cout << "Clean end" << endl;
   return 0;

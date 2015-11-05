@@ -28,6 +28,7 @@ bool P3::iterate() {
       add_if_unique(solution, level + 1);
     }
   }
+
   // P3 never "converges"
   return true;
 }

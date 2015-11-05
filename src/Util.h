@@ -49,9 +49,6 @@ class StopIteration : public std::exception {
   }
 };
 
-void throwStop(int dummy=0);
-
-
 // This is taken from Boost to allow for hashing of pairs
 template <class T>
 inline void hash_combine(std::size_t & seed, const T & v) {
