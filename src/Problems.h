@@ -62,6 +62,15 @@ class Rastrigin : public Problem {
   create_problem(Rastrigin);
 };
 
+class HIFF : public Problem {
+ public:
+  HIFF(Configuration& config);
+  double virtual evaluate(const vector<int> & solution) override;
+  create_problem(HIFF);
+ protected:
+  int maximum_fitness;
+};
+
 namespace problem {
 using pointer=std::shared_ptr<Problem> (*)(Configuration &);
 static std::unordered_map<string, pointer> lookup = {
@@ -69,6 +78,7 @@ static std::unordered_map<string, pointer> lookup = {
     { "DeceptiveTrap", DeceptiveTrap::create },
     { "PairsEqual", PairsEqual::create },
     { "Rastrigin", Rastrigin::create },
+    { "HIFF", HIFF::create },
 };
 }
 

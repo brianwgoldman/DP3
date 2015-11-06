@@ -70,7 +70,7 @@ void LinkageTree::rebuild() {
     int first = top_level[end_of_path - 2];
     int second = top_level[end_of_path - 1];
     // Only keep a cluster if the distance between the joining clusters is > zero
-    bool keep = distances[first][second] > 0;
+    bool keep = distances[first][second] > std::numeric_limits<double>::epsilon();
     useful[first] = keep;
     useful[second] = keep;
     // create the new cluster

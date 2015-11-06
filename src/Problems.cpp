@@ -98,3 +98,48 @@ double Rastrigin::evaluate(const vector<int> & solution) {
   }
   return -total;
 }
+
+HIFF::HIFF(Configuration& config) {
+  construct_range(config);
+}
+
+double HIFF::evaluate(const vector<int> & solution) {
+  // Data structure used to represent values as 0, 1, or -1 (Null)
+  int * level = new int[solution.size()];
+  int level_length = solution.size();
+
+  // Initialize the level to the current solution
+  for (size_t i = 0; i < solution.size(); i++) {
+    level[i] = solution[i];
+  }
+  int power = 1;
+  int next_length = level_length >> 1;
+  int total = 0;
+  int maximum = 0;
+
+  // Keep going while the next level actual has bits in it
+  while (next_length > 0) {
+    int * next_level = new int[next_length];
+    // Construct the next level using the current level
+    for (int i = 0; i + 1 < level_length; i += 2) {
+      if (level[i] == level[i + 1] and level[i] != -1) {
+        // Score points for a correct setting at this level
+        total += power;
+        next_level[i >> 1] = level[i];
+      } else {
+        next_level[i >> 1] = -1;
+      }
+      // Keep track of the maximum possible score
+      maximum += power;
+    }
+    delete[] level;
+    level = next_level;
+    level_length = next_length;
+    next_length = level_length >> 1;
+    power <<= 1;
+  }
+  delete[] level;
+
+  // Convert to percentage of total
+  return static_cast<double>(total) / maximum;
+}
