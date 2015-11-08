@@ -80,6 +80,7 @@ class External : public Problem {
       : script_file(config.get<string>("script_path")),
         out_file(config.get<string>("external_out")),
         in_file(config.get<string>("external_in")) {
+    construct_range(config);
   }
   double evaluate(const vector<int> & solution) override;
   create_problem(External);
