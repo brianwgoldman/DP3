@@ -71,6 +71,26 @@ class HIFF : public Problem {
   int maximum_fitness;
 };
 
+// This object uses external scripts to determine the fitness
+// of a solution. It writes out the solution, calls the script,
+// then reads in the fitness value.
+class External : public Problem {
+ public:
+  External(Configuration& config, int run_number)
+      : script_file(config.get<string>("script_path")),
+        out_file(config.get<string>("external_out")),
+        in_file(config.get<string>("external_in")) {
+  }
+  double evaluate(const vector<int> & solution) override;
+  create_problem(External);
+
+ private:
+  string script_file;
+  string out_file;
+  string in_file;
+};
+
+
 namespace problem {
 using pointer=std::shared_ptr<Problem> (*)(Configuration &);
 static std::unordered_map<string, pointer> lookup = {
@@ -79,6 +99,7 @@ static std::unordered_map<string, pointer> lookup = {
     { "PairsEqual", PairsEqual::create },
     { "Rastrigin", Rastrigin::create },
     { "HIFF", HIFF::create },
+    { "External", External::create },
 };
 }
 

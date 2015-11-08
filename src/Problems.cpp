@@ -143,3 +143,26 @@ double HIFF::evaluate(const vector<int> & solution) {
   // Convert to percentage of total
   return static_cast<double>(total) / maximum;
 }
+
+// Call the external script file to perform evaluation
+double External::evaluate(const vector<int>& solution) {
+  // write the solution to the output file
+  ofstream output(out_file);
+  for (const auto value : solution) {
+    output << value << " ";
+  }
+  output << endl;
+  output.close();
+
+  // calls the script file
+  int error_code = system(script_file.c_str());
+  if (error_code) {
+    throw std::invalid_argument("Script file returned non zero success");
+  }
+
+  // read the fitness from the input file
+  ifstream input(in_file);
+  float fitness;
+  input >> fitness;
+  return fitness;
+}
