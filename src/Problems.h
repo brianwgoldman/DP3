@@ -76,7 +76,7 @@ class HIFF : public Problem {
 // then reads in the fitness value.
 class External : public Problem {
  public:
-  External(Configuration& config, int run_number)
+  External(Configuration& config)
       : script_file(config.get<string>("script_path")),
         out_file(config.get<string>("external_out")),
         in_file(config.get<string>("external_in")) {
